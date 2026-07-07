@@ -1,4 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { RoomlyLogo } from "@/components/brand/roomly-logo";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import {
   isFirebaseConfigured,
   missingFirebaseConfig,
   signInWithGoogle,
+  waitForFirebaseUser,
 } from "@/integrations/firebase/client";
 
 export const Route = createFileRoute("/auth")({
@@ -24,6 +26,8 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -37,8 +41,11 @@ function AuthPage() {
 
     setLoading(true);
     try {
-      await signInWithGoogle();
-      navigate({ to: "/dashboard" });
+      const user = await signInWithGoogle();
+      await waitForFirebaseUser(user.uid);
+      queryClient.removeQueries({ queryKey: ["profile"] });
+      await router.invalidate();
+      await navigate({ to: "/dashboard", replace: true });
     } catch (error) {
       toast.error(firebaseAuthErrorMessage(error));
     } finally {

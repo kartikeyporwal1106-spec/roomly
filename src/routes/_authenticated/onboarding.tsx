@@ -57,33 +57,38 @@ function Onboarding() {
 
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Load existing
   useEffect(() => {
     (async () => {
-      const p = await fetchCurrentProfile();
-      if (p) {
-        setName(p.name ?? "");
-        setRollNumber(p.roll_number ?? "");
-        setCourse(p.branch ?? "");
-        setYear(String(p.year ?? "1"));
-        setGender(p.gender ?? "prefer_not_to_say");
-        setLookingStatus(p.looking_status ?? "looking_for_roommate");
-        setBio(p.bio ?? "");
-        setPhotoUrl(p.profile_photo);
-        if (p.room_id) {
-          setRoomId(p.room_id);
-          const { data: room } = await supabase
-            .from("rooms")
-            .select("id,floor_id,floor:floors(id,hostel_id)")
-            .eq("id", p.room_id)
-            .maybeSingle();
-          if (room) {
-            setFloorId(room.floor_id);
-            setHostelId((room.floor as any)?.hostel_id ?? "");
+      try {
+        const p = await fetchCurrentProfile();
+        if (p) {
+          setName(p.name ?? "");
+          setRollNumber(p.roll_number ?? "");
+          setCourse(p.branch ?? "");
+          setYear(String(p.year ?? "1"));
+          setGender(p.gender ?? "prefer_not_to_say");
+          setLookingStatus(p.looking_status ?? "looking_for_roommate");
+          setBio(p.bio ?? "");
+          setPhotoUrl(p.profile_photo);
+          if (p.room_id) {
+            setRoomId(p.room_id);
+            const { data: room } = await supabase
+              .from("rooms")
+              .select("id,floor_id,floor:floors(id,hostel_id)")
+              .eq("id", p.room_id)
+              .maybeSingle();
+            if (room) {
+              setFloorId(room.floor_id);
+              setHostelId((room.floor as any)?.hostel_id ?? "");
+            }
           }
+          if (p.onboarding_complete) navigate({ to: "/dashboard" });
         }
-        if (p.onboarding_complete) navigate({ to: "/dashboard" });
+      } catch (error) {
+        setLoadError(error instanceof Error ? error.message : "Could not load your profile.");
       }
     })();
   }, [navigate]);
@@ -196,6 +201,12 @@ function Onboarding() {
         </div>
 
         <div className="surface-panel p-8 md:p-10">
+          {loadError && (
+            <div className="mb-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+              {loadError}
+            </div>
+          )}
+
           {step === 0 && (
             <div className="space-y-5">
               <h1 className="text-2xl font-semibold tracking-tight">Tell us about you</h1>

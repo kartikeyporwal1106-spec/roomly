@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function Dashboard() {
+  const navigate = useNavigate();
   const { data: profile, error: profileError, isError, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchCurrentProfile,
@@ -24,9 +25,9 @@ function Dashboard() {
 
   useEffect(() => {
     if (!isLoading && profile && !profile.onboarding_complete) {
-      window.location.href = "/onboarding";
+      navigate({ to: "/onboarding", replace: true });
     }
-  }, [isLoading, profile]);
+  }, [isLoading, navigate, profile]);
 
   const { data: suggested } = useQuery({
     queryKey: ["suggested", profile?.id],

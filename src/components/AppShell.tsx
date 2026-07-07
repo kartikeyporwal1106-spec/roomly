@@ -1,4 +1,5 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { Bell, DoorOpen, Home, LogOut, Search, Settings, Shield, Users } from "lucide-react";
 
@@ -20,11 +21,14 @@ const navItems = [
 ] as const;
 
 export function AppShell({ children }: AppShellProps) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   const handleSignOut = async () => {
     await signOutFirebase();
-    window.location.href = "/auth";
+    queryClient.clear();
+    await navigate({ to: "/auth", replace: true });
   };
 
   return (

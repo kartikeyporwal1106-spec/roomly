@@ -77,9 +77,27 @@ export async function getCurrentFirebaseUser() {
   });
 }
 
+export async function waitForFirebaseUser(uid: string, timeoutMs = 5000) {
+  const firebaseAuth = getFirebaseAuth();
+  if (firebaseAuth.currentUser?.uid === uid) return firebaseAuth.currentUser;
+
+  return new Promise<User>((resolve, reject) => {
+    const timeout = window.setTimeout(() => {
+      unsubscribe();
+      reject(new Error("Firebase sign-in completed, but the browser session was not ready yet."));
+    }, timeoutMs);
+
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+      if (user?.uid !== uid) return;
+      window.clearTimeout(timeout);
+      unsubscribe();
+      resolve(user);
+    });
+  });
+}
+
 export async function signInWithGoogle() {
   const firebaseAuth = getFirebaseAuth();
-  const firestore = getFirebaseFirestore();
 
   await setPersistence(firebaseAuth, browserLocalPersistence);
 
@@ -87,15 +105,21 @@ export async function signInWithGoogle() {
   provider.setCustomParameters({ prompt: "select_account" });
 
   const result = await signInWithPopup(firebaseAuth, provider);
+  void syncFirestoreUser(result.user);
+  return result.user;
+}
+
+async function syncFirestoreUser(user: User) {
   try {
-    const userRef = doc(firestore, "users", result.user.uid);
+    const firestore = getFirebaseFirestore();
+    const userRef = doc(firestore, "users", user.uid);
     const snapshot = await getDoc(userRef);
 
     const userData = {
-      uid: result.user.uid,
-      displayName: result.user.displayName,
-      email: result.user.email,
-      photoURL: result.user.photoURL,
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
       lastLogin: serverTimestamp(),
     };
 
@@ -107,11 +131,9 @@ export async function signInWithGoogle() {
         createdAt: serverTimestamp(),
       });
     }
-  } catch (error) {
-    console.warn("[Firebase] Could not sync Firestore user document", error);
+  } catch {
+    // Firestore profile sync should not block Firebase Authentication.
   }
-
-  return result.user;
 }
 
 export async function signOutFirebase() {
