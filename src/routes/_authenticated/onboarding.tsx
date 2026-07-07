@@ -49,6 +49,11 @@ function Onboarding() {
   const [personality, setPersonality] = useState<string>("ambivert");
   const [languages, setLanguages] = useState("");
   const [hobbies, setHobbies] = useState("");
+  const [bookingCooler, setBookingCooler] = useState(false);
+  const [amenExhaust, setAmenExhaust] = useState(false);
+  const [amenFan, setAmenFan] = useState(false);
+  const [amenCurtains, setAmenCurtains] = useState(false);
+  const [amenBulb, setAmenBulb] = useState(false);
 
   const [lookingStatus, setLookingStatus] = useState("looking_for_roommate");
   const [bio, setBio] = useState("");
@@ -192,6 +197,11 @@ function Onboarding() {
         languages: languages.split(",").map((s) => s.trim()).filter(Boolean),
         hobbies: hobbies.split(",").map((s) => s.trim()).filter(Boolean),
         smoking, drinking, gaming,
+        booking_cooler: bookingCooler,
+        amen_exhaust: amenExhaust,
+        amen_fan: amenFan,
+        amen_curtains: amenCurtains,
+        amen_bulb: amenBulb,
       };
       const { error: prefErr } = await supabase.from("preferences").upsert(prefs);
       if (prefErr) throw prefErr;
@@ -295,6 +305,26 @@ function Onboarding() {
                     <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select a room" /></SelectTrigger>
                     <SelectContent>{rooms?.map((r) => <SelectItem key={r.id} value={r.id}>Room {r.room_number}</SelectItem>)}</SelectContent>
                   </Select>
+                </div>
+              )}
+              {roomId && (
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  <label className="flex items-center justify-between rounded-lg border border-border p-3 text-sm">
+                    <span>Exhaust working</span>
+                    <Switch checked={amenExhaust} onCheckedChange={setAmenExhaust} />
+                  </label>
+                  <label className="flex items-center justify-between rounded-lg border border-border p-3 text-sm">
+                    <span>Fan working</span>
+                    <Switch checked={amenFan} onCheckedChange={setAmenFan} />
+                  </label>
+                  <label className="flex items-center justify-between rounded-lg border border-border p-3 text-sm">
+                    <span>Curtains available</span>
+                    <Switch checked={amenCurtains} onCheckedChange={setAmenCurtains} />
+                  </label>
+                  <label className="flex items-center justify-between rounded-lg border border-border p-3 text-sm">
+                    <span>Bulb installed</span>
+                    <Switch checked={amenBulb} onCheckedChange={setAmenBulb} />
+                  </label>
                 </div>
               )}
             </div>

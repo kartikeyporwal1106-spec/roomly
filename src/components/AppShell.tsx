@@ -19,6 +19,7 @@ type AppShellProps = {
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home },
   { to: "/explore", label: "Explore", icon: Search },
+  { to: "/complaints", label: "Complaints", icon: Users },
   { to: "/hostels", label: "Hostels", icon: DoorOpen },
   { to: "/requests", label: "Requests", icon: Bell },
   { to: "/settings", label: "Settings", icon: Settings },

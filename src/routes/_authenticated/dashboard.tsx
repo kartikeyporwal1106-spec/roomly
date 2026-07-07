@@ -141,6 +141,16 @@ function Dashboard() {
                 <div className="mt-1 text-sm text-muted-foreground">
                   {formatFloor((profile.room as any).floor.floor_number)} · {(profile.room as any).floor.hostel.hostel_name}
                 </div>
+                <div className="mt-3 grid gap-2 text-sm">
+                  <div className="text-xs text-muted-foreground">Room amenities</div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className={`rounded-full border px-2 py-1 text-xs ${profile.booking_cooler ? 'bg-primary/10 border-primary' : 'bg-muted/10'}`}>Cooler booking: {profile.booking_cooler ? 'Yes' : 'No'}</span>
+                    <span className={`rounded-full border px-2 py-1 text-xs ${profile.amen_exhaust ? 'bg-primary/10 border-primary' : 'bg-muted/10'}`}>Exhaust: {profile.amen_exhaust ? 'Working' : 'No'}</span>
+                    <span className={`rounded-full border px-2 py-1 text-xs ${profile.amen_fan ? 'bg-primary/10 border-primary' : 'bg-muted/10'}`}>Fan: {profile.amen_fan ? 'Working' : 'No'}</span>
+                    <span className={`rounded-full border px-2 py-1 text-xs ${profile.amen_curtains ? 'bg-primary/10 border-primary' : 'bg-muted/10'}`}>Curtains: {profile.amen_curtains ? 'Yes' : 'No'}</span>
+                    <span className={`rounded-full border px-2 py-1 text-xs ${profile.amen_bulb ? 'bg-primary/10 border-primary' : 'bg-muted/10'}`}>Bulb: {profile.amen_bulb ? 'Yes' : 'No'}</span>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="mt-3 text-sm text-muted-foreground">
