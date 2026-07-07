@@ -38,7 +38,7 @@ function Landing() {
             style={{ fontFamily: "var(--font-display)" }}
           >
             Find the <span className="italic text-primary">right</span> roommate,<br />
-            not just any bunk.
+            do n't live in a bunker.
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground md:text-lg">
             Roomly matches hostel students by sleep schedule, cleanliness, study

@@ -1,10 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scripts } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { useEffect, useState, type ReactNode } from "react";
+import { RoomlySplash } from "@/components/roomly-splash";
 
 function NotFoundComponent() {
   return (
@@ -83,6 +84,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6c8fb040-a4af-4cbd-a1a4-cc7e255ee545/id-preview-60f2c2d1--070a43a3-f0ba-4f03-8a53-1d0ef8ca026f.lovable.app-1783362060379.png" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -97,6 +101,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `;(function(){try{var t=localStorage.getItem('roomly-theme');if(t==='dark'){document.documentElement.classList.add('dark');}else if(t==='dev'){document.documentElement.classList.add('dev');}else{document.documentElement.classList.add('dark');}var f=localStorage.getItem('roomly-font')||'inter';if(f==='comic'){document.documentElement.style.setProperty('--font-body', "'Comic Sans MS', 'Comic Sans', cursive");document.documentElement.style.setProperty('--font-display', "'Comic Sans MS', 'Comic Sans', cursive");}else if(f==='system'){document.documentElement.style.setProperty('--font-body', 'ui-rounded, "SF Pro Rounded", "Avenir Next Rounded", "Trebuchet MS", system-ui, sans-serif');document.documentElement.style.setProperty('--font-display', 'ui-rounded, "SF Pro Rounded", "Avenir Next Rounded", "Trebuchet MS", system-ui, sans-serif');}else{document.documentElement.style.setProperty('--font-body', "'Inter', ui-rounded, 'SF Pro Rounded', 'Avenir Next Rounded', 'Trebuchet MS', system-ui, sans-serif");document.documentElement.style.setProperty('--font-display', "'Inter', ui-rounded, 'SF Pro Rounded', 'Avenir Next Rounded', 'Trebuchet MS', system-ui, sans-serif");}}catch(e){} })();` }} />
         <HeadContent />
       </head>
       <body>
@@ -110,8 +115,29 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  const [splashVisible, setSplashVisible] = useState(true);
+
+  useEffect(() => {
+    // Hide splash after first paint / short delay or when window load fires
+    let t = window.setTimeout(() => setSplashVisible(false), 1100);
+    function onLoad() {
+      setSplashVisible(false);
+      window.clearTimeout(t);
+    }
+    if (document.readyState === "complete") {
+      onLoad();
+    } else {
+      window.addEventListener("load", onLoad, { once: true });
+    }
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("load", onLoad as any);
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
+      {splashVisible && <RoomlySplash />}
       <Outlet />
       <Toaster position="top-center" />
     </QueryClientProvider>

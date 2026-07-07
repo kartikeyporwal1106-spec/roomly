@@ -21,6 +21,8 @@ function Explore() {
   const [hostelId, setHostelId] = useState<string>("all");
   const [year, setYear] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
+  const [floorFilter, setFloorFilter] = useState<string>("all");
+  const [tagFilters, setTagFilters] = useState<string[]>([]);
 
   const { data: hostels } = useQuery({
     queryKey: ["hostels"],
@@ -45,9 +47,26 @@ function Explore() {
   const filtered = useMemo(() => {
     return (people ?? []).filter((p: any) => {
       if (hostelId !== "all" && p.room?.floor?.hostel?.id !== hostelId) return false;
+      if (floorFilter !== "all") {
+        const num = p.room?.floor?.floor_number;
+        if (floorFilter === "ground" && num !== 0) return false;
+        if (floorFilter === "first" && num !== 1) return false;
+        if (floorFilter === "second" && num !== 2) return false;
+      }
       if (q) {
         const s = q.toLowerCase();
         if (!(p.name?.toLowerCase().includes(s) || p.branch?.toLowerCase().includes(s))) return false;
+      }
+
+      // tag filters: support early_bird, night_owl, own, gamer
+      if (tagFilters.length) {
+        const text = ((p.bio || "") + " " + (p.study_habit || "") + " " + (p.personality || "")).toLowerCase();
+        for (const t of tagFilters) {
+          if (t === "early_bird" && !text.includes("early")) return false;
+          if (t === "night_owl" && !text.includes("night")) return false;
+          if (t === "gamer" && !text.includes("gamer")) return false;
+          if (t === "own" && !text.includes("own")) return false;
+        }
       }
       return true;
     });

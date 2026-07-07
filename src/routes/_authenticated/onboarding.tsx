@@ -40,6 +40,7 @@ function Onboarding() {
   const [hostelId, setHostelId] = useState<string>("");
   const [floorId, setFloorId] = useState<string>("");
   const [roomId, setRoomId] = useState<string>("");
+  const [errors, setErrors] = useState<{ hostel?: string; room?: string }>({});
 
   const [sleepTime, setSleepTime] = useState("23:30");
   const [wakeTime, setWakeTime] = useState("07:00");
@@ -117,7 +118,22 @@ function Onboarding() {
 
   const totalSteps = 5;
 
-  const next = () => setStep((s) => (Math.min(4, s + 1) as Step));
+  const next = () => {
+    // when moving forward from hostel step, require hostel + room
+    if (step === 1) {
+      const e: { hostel?: string; room?: string } = {};
+      if (!hostelId) e.hostel = "Please select your hostel";
+      if (!roomId) e.room = "Please select your room";
+      if (e.hostel || e.room) {
+        setErrors(e);
+        if (e.hostel) toast.error(e.hostel);
+        else if (e.room) toast.error(e.room);
+        return;
+      }
+      setErrors({});
+    }
+    setStep((s) => (Math.min(4, s + 1) as Step));
+  };
   const prev = () => setStep((s) => (Math.max(0, s - 1) as Step));
 
   const uploadPhoto = async (file: File) => {

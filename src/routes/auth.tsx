@@ -3,6 +3,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { RoomlyLogo } from "@/components/brand/roomly-logo";
 import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { setTheme } from "@/components/theme-toggle";
+import { setFont, storedFont } from "@/lib/font";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import {
@@ -29,12 +32,22 @@ function AuthPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const [theme, setLocalTheme] = useState<string>(() => {
+    try { return typeof window !== 'undefined' ? (localStorage.getItem('roomly-theme') || 'light') : 'light'; } catch (e) { return 'light'; }
+  });
+  const [font, setLocalFont] = useState<string>(() => storedFont());
 
   useEffect(() => {
     getCurrentFirebaseUser().then((user) => {
       if (user) navigate({ to: "/dashboard" });
     });
   }, [navigate]);
+
+  useEffect(() => {
+    try {
+      setFont(storedFont());
+    } catch (e) {}
+  }, []);
 
   const handleGoogle = async () => {
     if (!ensureFirebaseReady()) return;
@@ -68,6 +81,25 @@ function AuthPage() {
         </Link>
 
         <div className="surface-panel p-8">
+          <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <Select value={theme} onValueChange={(v) => { try { setTheme(v as any); localStorage.setItem('roomly-theme', v); setLocalTheme(v); } catch(e){} }}>
+              <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="dev">Dev</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={font} onValueChange={(v) => { try { setFont(v as any); localStorage.setItem('roomly-font', v); setLocalFont(v); } catch(e){} }}>
+              <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="inter">Inter</SelectItem>
+                <SelectItem value="system">System</SelectItem>
+                <SelectItem value="comic">Comic Sans</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Sign in with Google to keep exploring roommates.

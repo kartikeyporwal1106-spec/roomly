@@ -7,6 +7,10 @@ import { RoomlyLogo } from "@/components/brand/roomly-logo";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOutFirebase } from "@/integrations/firebase/client";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import { setFont, storedFont, type FontKey } from "@/lib/font";
+import { ThemeToggle, setTheme } from "@/components/theme-toggle";
 
 type AppShellProps = {
   children: ReactNode;
@@ -21,6 +25,7 @@ const navItems = [
 ] as const;
 
 export function AppShell({ children }: AppShellProps) {
+  const [font, setFontKey] = useState<FontKey>(storedFont());
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
@@ -31,12 +36,51 @@ export function AppShell({ children }: AppShellProps) {
     await navigate({ to: "/auth", replace: true });
   };
 
+  useEffect(() => {
+    // apply stored font on mount
+    try {
+      setFont(storedFont());
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  const handleFontChange = (v: string) => {
+    const key = v as FontKey;
+    setFont(key);
+    setFontKey(key);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-background/95 px-5 py-6 backdrop-blur lg:flex lg:flex-col">
-        <Link to="/dashboard" className="mb-8">
-          <RoomlyLogo />
-        </Link>
+        <div className="mb-6 flex items-center justify-between">
+          <Link to="/dashboard" className="flex items-center gap-3">
+            <RoomlyLogo />
+          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              title="Set dev theme"
+              onClick={() => { setTheme('dev'); }}
+              className="rounded-full border border-border bg-card px-2 py-0.5 text-xs font-semibold text-muted-foreground"
+            >
+              Dev
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-2 block text-xs font-semibold text-muted-foreground">Font</label>
+          <Select value={font} onValueChange={handleFontChange}>
+            <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="inter">Inter</SelectItem>
+              <SelectItem value="system">System</SelectItem>
+              <SelectItem value="comic">Comic Sans</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <nav className="flex flex-1 flex-col gap-1">
           {navItems.map((item) => {
@@ -79,9 +123,27 @@ export function AppShell({ children }: AppShellProps) {
           <Link to="/dashboard">
             <RoomlyLogo markClassName="h-8 w-8" textClassName="text-xl" />
           </Link>
-          <Button type="button" variant="ghost" size="icon" onClick={handleSignOut} aria-label="Sign out">
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              title="Set dev theme"
+              onClick={() => { setTheme('dev'); }}
+              className="rounded-full border border-border bg-card px-2 py-0.5 text-xs font-semibold text-muted-foreground"
+            >
+              Dev
+            </button>
+            <Select value={font} onValueChange={handleFontChange}>
+              <SelectTrigger className="w-32 text-sm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="inter">Inter</SelectItem>
+                <SelectItem value="system">System</SelectItem>
+                <SelectItem value="comic">Comic Sans</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button type="button" variant="ghost" size="icon" onClick={handleSignOut} aria-label="Sign out">
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         <nav className="mt-3 flex gap-1 overflow-x-auto pb-1">
           {navItems.map((item) => {
