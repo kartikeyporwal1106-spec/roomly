@@ -115,7 +115,7 @@ export const Route = createFileRoute("/upsifs-hostel")({
   head: () => ({
     meta: [
       { title: "UPSIFS Hostel registration" },
-      { name: "description", content: "Register hostel students using a college email and sync spreadsheet data with Supabase." },
+      { name: "description", content: "Register hostel students using a college email and sync spreadsheet data with the hostel system." },
     ],
   }),
   component: UpsifsHostel,
@@ -436,7 +436,7 @@ function UpsifsHostel() {
             <p className="text-sm uppercase tracking-[0.2em] text-primary">UPSIFS Hostel</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight">Register students with college email and hostel amenities.</h1>
             <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-              Add or update profiles in Supabase, including room assignment and amenity fields for exhaust, fan, cooler, curtains and bulb.
+              Add or update student profiles, including room assignment and amenities for exhaust, fan, cooler, curtains, and bulb.
             </p>
           </div>
           <Link to="/" className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-accent">
@@ -449,7 +449,7 @@ function UpsifsHostel() {
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-semibold">College email registration</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Create or update an individual student profile without Firebase sign in.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Create or update an individual student profile with college email only.</p>
               </div>
               <span className="rounded-full bg-muted px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">Manual entry</span>
             </div>
