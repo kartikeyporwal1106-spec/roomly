@@ -449,7 +449,7 @@ function UpsifsHostel() {
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-semibold">College email registration</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">Create or update an individual student profile with college email only.</p>
+                <p className="mt-1 text-sm text-muted-foreground">Create or update an individual student profile with college email only.</p>
               </div>
               <span className="rounded-full bg-muted px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">Manual entry</span>
             </div>
