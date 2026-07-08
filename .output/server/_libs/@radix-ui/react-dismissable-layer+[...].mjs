@@ -1,8 +1,8 @@
 import { n as __toESM } from "../../_runtime.mjs";
-import { n as Primitive, o as useComposedRefs, r as dispatchDiscreteCustomEvent, s as require_jsx_runtime } from "./react-arrow+[...].mjs";
 import { u as require_react } from "../@floating-ui/react-dom+[...].mjs";
-import { a as useCallbackRef, i as useLayoutEffect2 } from "./react-avatar+[...].mjs";
+import { n as Primitive, o as useComposedRefs, r as dispatchDiscreteCustomEvent, s as require_jsx_runtime } from "./react-arrow+[...].mjs";
 import { t as composeEventHandlers } from "../radix-ui__primitive.mjs";
+import { a as useCallbackRef, i as useLayoutEffect2 } from "./react-avatar+[...].mjs";
 //#region node_modules/@radix-ui/react-use-effect-event/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var useReactEffectEvent = import_react[" useEffectEvent ".trim().toString()];

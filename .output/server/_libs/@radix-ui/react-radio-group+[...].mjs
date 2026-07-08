@@ -1,8 +1,8 @@
 import { n as __toESM } from "../../_runtime.mjs";
-import { n as Primitive, o as useComposedRefs, s as require_jsx_runtime } from "./react-arrow+[...].mjs";
 import { u as require_react } from "../@floating-ui/react-dom+[...].mjs";
-import { a as useCallbackRef, i as useLayoutEffect2, o as createContextScope } from "./react-avatar+[...].mjs";
+import { n as Primitive, o as useComposedRefs, s as require_jsx_runtime } from "./react-arrow+[...].mjs";
 import { t as composeEventHandlers } from "../radix-ui__primitive.mjs";
+import { a as useCallbackRef, i as useLayoutEffect2, o as createContextScope } from "./react-avatar+[...].mjs";
 import { t as createCollection } from "../radix-ui__react-collection.mjs";
 import { t as useDirection } from "../radix-ui__react-direction.mjs";
 import { t as useId } from "../radix-ui__react-id.mjs";

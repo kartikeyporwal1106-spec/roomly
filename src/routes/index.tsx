@@ -18,12 +18,20 @@ function Landing() {
           <a href="#features" className="hover:text-foreground">Features</a>
           <a href="#how" className="hover:text-foreground">How it works</a>
         </nav>
-        <Link
-          to="/auth"
-          className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
-        >
-          Sign in
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/upsifs-hostel"
+            className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-accent"
+          >
+            UPSIFS hostel
+          </Link>
+          <Link
+            to="/auth"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+          >
+            Sign in
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}
